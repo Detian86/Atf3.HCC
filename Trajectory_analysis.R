@@ -119,3 +119,45 @@ plot_density_and_trajectory <- function(cds) {
 pdf("Results/Fig3f_PseudotimeDensity.pdf", width = 8, height = 6, useDingbats = FALSE)
 print(plot_density_and_trajectory(mycds))
 dev.off()
+
+# Extract data from trajectory
+data.peudo <- plot_cell_trajectory(mycds)$data
+
+# Set cluster levels
+data.peudo$cluster <- factor(data.peudo$cluster, 
+                             levels = c("NaiveCD8", "Early-activatedCD8", "EffectorCD8", "ExhaustedCD8"))
+
+# Updated density plot with geom_smooth for better visualization
+p1 <- ggplot(data.peudo, aes(x = data_dim_1, color = cluster, fill = cluster)) +
+  geom_smooth(method = "loess", se = FALSE, size = 1) +  # Using geom_smooth to better represent trends
+  facet_wrap(vars(cluster)) +
+  theme(legend.position = 'none', panel.border = element_blank()) +
+  scale_color_manual(values = cluster_colors) +
+  scale_fill_manual(values = cluster_colors) +
+  theme_classic()
+
+# Trajectory plot with updated colors
+p2 <- plot_cell_trajectory(mycds, x = 1, y = 2, color_by = "cluster") +
+  theme(legend.position = 'none', panel.border = element_blank()) +
+  scale_color_manual(values = cluster_colors) +
+  facet_wrap(vars(cluster))
+
+# Save updated density and trajectory plots as PDF
+pdf("Results/Fig4_PseudotimeDensity.pdf", width = 12, height = 8, useDingbats = FALSE)
+ggarrange(p1, p2, ncol = 1, nrow = 2, align = "v")
+dev.off()
+
+# Changed geom_density to geom_smooth for better pseudotime visualization
+
+pdf("Results/FigS6b_Pseudotime.pdf", width = 10, height = 12)
+
+p_wave <- ggplot(data.peudo, aes(x = Pseudotime, color = cluster, fill = cluster)) +
+  geom_smooth(method = "loess", se = TRUE, size = 1, alpha = 0.3) +  # Smooth trend for wave visualization
+  facet_wrap(vars(cluster), ncol = 1) +
+  theme(legend.position = 'none', panel.border = element_blank()) +
+  scale_color_manual(values = cluster_colors) +
+  scale_fill_manual(values = cluster_colors) +
+  theme_classic()
+
+print(p_wave)
+dev.off()
