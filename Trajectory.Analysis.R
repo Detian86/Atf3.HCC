@@ -64,12 +64,11 @@ plot_complex_trajectory <- function(cds) {
     theme(legend.title = element_blank())
 }
 
-# Save PDF for complex trajectory
-pdf("Results/Fig4S_Pseudotimehierarchy.pdf", width = 4, height = 4, useDingbats = FALSE)
+# Trajectory
 plot_complex_cell_trajectory(mycds, x = 1, y = 2, color_by = "cluster", show_branch_points = FALSE) +
   scale_color_manual(values = cluster_colors) +
   theme(legend.title = element_blank())
-dev.off()
+
 
 # Plot Pseudotime and Cluster Trajectories side-by-side
 plot_pseudotime_trajectory <- function(cds) {
@@ -84,10 +83,9 @@ plot_pseudotime_trajectory <- function(cds) {
   ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, align = "v")
 }
 
-# Save PDF of Pseudotime and Cluster Trajectories
-pdf("Results/Fig3E_Pseudotime.pdf", width = 9, height = 4, useDingbats = FALSE)
+# Pseudotime and Cluster Trajectories
 print(plot_pseudotime_trajectory(mycds))
-dev.off()
+
 
 # Plot density distribution and trajectory colored by cluster
 plot_density_and_trajectory <- function(cds) {
@@ -115,10 +113,8 @@ plot_density_and_trajectory <- function(cds) {
   ggpubr::ggarrange(p1, p2, ncol = 1, nrow = 2, align = "h")
 }
 
-# Save PDF of Pseudotime Density Plot and Cluster Trajectory
-pdf("Results/Fig3f_PseudotimeDensity.pdf", width = 8, height = 6, useDingbats = FALSE)
+# Pseudotime Density Plot and Cluster Trajectory
 print(plot_density_and_trajectory(mycds))
-dev.off()
 
 # Extract data from trajectory
 data.peudo <- plot_cell_trajectory(mycds)$data
@@ -142,15 +138,11 @@ p2 <- plot_cell_trajectory(mycds, x = 1, y = 2, color_by = "cluster") +
   scale_color_manual(values = cluster_colors) +
   facet_wrap(vars(cluster))
 
-# Save updated density and trajectory plots as PDF
-pdf("Results/Fig4_PseudotimeDensity.pdf", width = 12, height = 8, useDingbats = FALSE)
+# Updated density and trajectory plots
 ggarrange(p1, p2, ncol = 1, nrow = 2, align = "v")
-dev.off()
+
 
 # Changed geom_density to geom_smooth for better pseudotime visualization
-
-pdf("Results/FigS6b_Pseudotime.pdf", width = 10, height = 12)
-
 p_wave <- ggplot(data.peudo, aes(x = Pseudotime, color = cluster, fill = cluster)) +
   geom_smooth(method = "loess", se = TRUE, size = 1, alpha = 0.3) +  # Smooth trend for wave visualization
   facet_wrap(vars(cluster), ncol = 1) +
@@ -160,4 +152,3 @@ p_wave <- ggplot(data.peudo, aes(x = Pseudotime, color = cluster, fill = cluster
   theme_classic()
 
 print(p_wave)
-dev.off()
